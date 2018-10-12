@@ -89,4 +89,5 @@ Check the examples folder for a full example.
 ```
  ### Result
  ![alt text](https://i.imgur.com/Djx9m1o.png "Notification result")
- Notifications stack on top of each other.
+ 
+ (Notifications stack on top of each other)
