@@ -8,8 +8,6 @@ To install simply:
 ```
 npm i --save electron-custom-notifications
 ```
-## Examples
-Check the examples folder for a full example.
 ### Full usage
 Please note that you need to use this inside an existing Electron application after the `.on('ready')` event has been fired.
 ```javascript
