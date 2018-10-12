@@ -1,6 +1,8 @@
 # electron-custom-notifications
 Display customized HTML/CSS notifications in a cross-platform way.
 
+
+
 ## Installation
 To install simply: 
 ```
@@ -85,3 +87,5 @@ Check the examples folder for a full example.
     console.log("Notification has been closed");
   });
 ```
+ ### Result
+ ![alt text](https://i.imgur.com/Djx9m1o.png "Notification result")
