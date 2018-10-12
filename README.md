@@ -1,5 +1,5 @@
 # electron-custom-notifications
-Display customized HTML/CSS notifications in a cross-platform way.
+Display customized HTML/CSS notifications in a cross-platform way. Instead of relying on Windows, Mac or Linux APIs to show notifications, this uses an extra Electron window to display them, giving the developer the freedom to style the notifications as they choose to.
 
 
 
@@ -20,6 +20,7 @@ Check the examples folder for a full example.
   } = require("electron-custom-notifications");
   
   // OPTIONAL: Set optional container width.
+  // DEFAULT: 300
   setContainerWidth(350);
 
   // OPTIONAL: Set custom styles.
@@ -86,8 +87,11 @@ Check the examples folder for a full example.
   notification.on("close", () => {
     console.log("Notification has been closed");
   });
+  
+  // Close the notification at will.
+  // notification.close();
 ```
- ### Result
+ ### Result of example above
  ![alt text](https://i.imgur.com/Djx9m1o.png "Notification result")
  
  (Notifications stack on top of each other)
