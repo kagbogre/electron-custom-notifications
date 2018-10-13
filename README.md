@@ -238,7 +238,7 @@ Our notification has the best font in the world.
 
 ![alt text](https://i.imgur.com/Ez6as51.png "Notification result")
 
-## Animating 
+## Animations
 You can write up your own CSS animations in `setGlobalStyles()`, or you can use Animate.css library, which is already included and ready to use in this library.
 Example animated notification template:
 ```html
