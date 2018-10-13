@@ -8,7 +8,7 @@ To install simply:
 ```
 npm i --save electron-custom-notifications
 ```
-## Basic Usage
+## Full Usage
 Please note that you need to use this inside an existing Electron application after the `.on('ready')` event has been fired.
 ```javascript
   const {
