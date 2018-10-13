@@ -96,7 +96,7 @@ Please note that you need to use this inside an existing Electron application af
   (Notifications stack on top of each other)
  
  ## Adding Images
- To add images, we will load them in base64 encoding.
+ To add images, we will load them in base64 encoding. Using relative/absolute paths will most likely not work.
  Here's an example of a YouTube-styled notification:
  ```javascript
 const {
@@ -158,5 +158,85 @@ app.on("ready", () => {
 ```
  ### Result
  ![alt text](https://i.imgur.com/W8L0e2J.png "Notification result")
+ 
+ ## Adding custom fonts
+ Same thing as with the images. We will need to use base64 encoding to add them to our styles.
+ ```javascript
+const {
+  setGlobalStyles,
+  createNotification,
+} = require("electron-custom-notifications");
+
+const fs = require("fs");
+
+const logo = fs.readFileSync("youtube.png", "base64");
+const robotoRegular = fs.readFileSync("Roboto-Regular.ttf", "base64");
+const robotoBold = fs.readFileSync("Roboto-Bold.ttf", "base64");
+
+setGlobalStyles(`
+  @font-face {
+    font-family: 'Roboto';
+    src: url(data:font/truetype;charset=utf-8;base64,${robotoRegular}) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'Roboto';
+    src: url(data:font/truetype;charset=utf-8;base64,${robotoBold}) format('truetype');
+    font-weight: bold;
+    font-style: normal;
+  }
+  * {
+    font-family: Roboto;
+  }
+  notification {
+    overflow:hidden;
+    display:block;
+    padding:20px;
+    background-color:#fff;
+    border-radius:12px;
+    margin:10px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    display:flex;
+  }
+  notification h1 {
+    font-weight:bold;
+  }
+  notification #logo {
+    background-image:url("data:image/png;base64,${logo}");
+    background-size:cover;
+    background-position:center;
+    width:80px;
+    height:50px;
+  }
+`);
+
+app.on("ready", () => {
+  const notification = createNotification({
+    template: `
+    <notification id="%id%">
+      <div id="logo"></div>
+      <div id="content">
+        <h1>Watch on Youtube</h1>
+        <p>This is a notification about a YouTube video.</p>
+      </div>
+    </notification> 
+    `,
+
+    //timeout: 3000,
+  });
+
+  notification.on("click", () => {
+    require("electron").shell.openExternal(
+      "https://www.youtube.com/watch?v=M9FGaan35s0"
+    );
+  });
+}); 
+```
+### Result
+Our notification has the best font in the world.
+
+![alt text](https://i.imgur.com/Ez6as51.png "Notification result")
+
  
 
