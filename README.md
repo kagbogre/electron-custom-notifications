@@ -8,7 +8,7 @@ To install simply:
 ```
 npm i --save electron-custom-notifications
 ```
-### Full usage
+## Basic Usage
 Please note that you need to use this inside an existing Electron application after the `.on('ready')` event has been fired.
 ```javascript
   const {
@@ -90,7 +90,73 @@ Please note that you need to use this inside an existing Electron application af
   // Close the notification at will.
   // notification.close();
 ```
- ### Result of example above
+ ### Result
  ![alt text](https://i.imgur.com/Djx9m1o.png "Notification result")
  
- (Notifications stack on top of each other)
+  (Notifications stack on top of each other)
+ 
+ ## Adding Images
+ To add images, we will load them in base64 encoding.
+ Here's an example of a YouTube-styled notification:
+ ```javascript
+const {
+  setGlobalStyles,
+  createNotification,
+} = require("electron-custom-notifications");
+
+// Load image in base64 encoding.
+const logo = require("fs").readFileSync("youtube.png", "base64");
+
+setGlobalStyles(`
+  * {
+    font-family: Helvetica;
+  }
+  notification {
+    overflow:hidden;
+    display:block;
+    padding:20px;
+    background-color:#fff;
+    border-radius:12px;
+    margin:10px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    display:flex;
+  }
+  notification h1 {
+    font-weight:bold;
+  }
+  notification #logo {
+    background-image:url("data:image/png;base64,${logo}");
+    background-size:cover;
+    background-position:center;
+    width:80px;
+    height:50px;
+  }
+`);
+
+app.on("ready", () => {
+  const notification = createNotification({
+    template: `
+    <notification id="%id%">
+      <div id="logo"></div>
+      <div id="content">
+        <h1>Watch on Youtube</h1>
+        <p>This is a notification about a YouTube video.</p>
+      </div>
+    </notification> 
+    `,
+
+    timeout: 3000,
+  });
+
+  notification.on("click", () => {
+    // Open the YouTube link in a browser.
+    require("electron").shell.openExternal(
+      "https://www.youtube.com/watch?v=M9FGaan35s0"
+    );
+  });
+});
+```
+ ### Result
+ ![alt text](https://i.imgur.com/W8L0e2J.png "Notification result")
+ 
+
