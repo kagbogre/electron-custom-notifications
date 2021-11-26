@@ -29,19 +29,6 @@ class Notification extends EventEmitter {
    * @memberof Notification
    */
   public options: INotificationOptions;
-  /**
-   * Default notification template.
-   *
-   * @static
-   * @type {string}
-   * @memberof Notification
-   */
-  public static TEMPLATE: string = `
-    <notification id="%id%">
-        <h1>%title%</h1>
-        <p>%body%</p>
-    </notification>
-  `;
 
   /**
    * Creates an instance of Notification.
@@ -68,21 +55,15 @@ class Notification extends EventEmitter {
    * @memberof Notification
    */
   public getSource(): string {
-    let template = this.options.template || Notification.TEMPLATE;
-
-    template = template.replace(new RegExp("%id%", "g"), this.id);
-
-    if (this.options.parameters && this.options.parameters.length > 0) {
-      for (let i = 0; i < this.options.parameters.length; i++) {
-        const parameter = this.options.parameters[i];
-
-        template = template.replace(
-          new RegExp("%" + parameter.key + "%", "g"),
-          parameter.value
-        );
-      }
-    }
-    return template;
+    if(!this.options.content) return '';
+    const firstClosingTagIndex = this.options.content?.indexOf('>');
+    const idAttribute = ` data-notification-id="${this.id}"`;
+    const output = [
+      this.options.content.slice(0, firstClosingTagIndex), 
+      idAttribute, 
+      this.options.content.slice(firstClosingTagIndex)
+    ];
+    return output.join('');
   }
 }
 
