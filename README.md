@@ -194,7 +194,7 @@ app.on("ready", () => {
         <h1>Watch on Youtube</h1>
         <p>This is a notification about a YouTube video.</p>
       </div>
-    </notification> 
+    </div> 
     `,
 
     // OPTIONAL: Specify a timeout.
@@ -223,7 +223,7 @@ Example animated notification content:
     <h1>Watch on Youtube</h1>
     <p>This is a notification about a YouTube video.</p>
   </div>
-</notification> 
+</div> 
 ```
 [Check out Animate.css for more animations](https://github.com/daneden/animate.css)
 ### Result
