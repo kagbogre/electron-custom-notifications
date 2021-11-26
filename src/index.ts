@@ -31,18 +31,9 @@ function setGlobalStyles(css: string) {
 function setContainerWidth(width: number) {
   NotificationContainer.CONTAINER_WIDTH = width;
 }
-/**
- * Changes the default notification template.
- *
- * @param {string} template
- */
-function setDefaultTemplate(template: string) {
-  Notification.TEMPLATE = template;
-}
 
 export {
   createNotification,
   setContainerWidth,
-  setGlobalStyles,
-  setDefaultTemplate,
+  setGlobalStyles
 };

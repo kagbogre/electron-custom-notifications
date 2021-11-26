@@ -5,7 +5,6 @@
  * @interface INotificationOptions
  */
 export default interface INotificationOptions {
-  template?: string;
-  parameters?: { key: string; value: string }[];
+  content?: string;
   timeout?: number;
 }

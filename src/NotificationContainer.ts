@@ -51,7 +51,7 @@ class NotificationContainer {
    * @type {BrowserWindow}
    * @memberof NotificationContainer
    */
-  private window: BrowserWindow;
+  private window: BrowserWindow | null;
   /**
    * Creates an instance of NotificationContainer.
    * @memberof NotificationContainer
@@ -76,13 +76,18 @@ class NotificationContainer {
     options.transparent = true;
     options.x = displayWidth - NotificationContainer.CONTAINER_WIDTH;
     options.y = 0;
+    options.webPreferences = {
+      nodeIntegration: true,
+      contextIsolation: false,
+    }; // Since we're not displaying untrusted content 
+       // (all links are opened in a real browser window), we can enable this.
 
     this.window = new BrowserWindow(options);
     this.window.setVisibleOnAllWorkspaces(true);
     this.window.loadURL(path.join("file://", __dirname, "/container.html"));
     this.window.setIgnoreMouseEvents(true, { forward: true });
     this.window.showInactive();
-    // this.window.webContents.openDevTools();
+    // this.window.webContents.openDevTools({ mode: 'detach' });
 
     ipcMain.on("notification-clicked", (e: any, id: string) => {
       const notification = this.notifications.find(
@@ -95,22 +100,27 @@ class NotificationContainer {
     });
 
     ipcMain.on("make-clickable", (e: any) => {
-      this.window.setIgnoreMouseEvents(false);
+      this.window && this.window.setIgnoreMouseEvents(false);
     });
 
     ipcMain.on("make-unclickable", (e: any) => {
-      this.window.setIgnoreMouseEvents(true, { forward: true });
+      this.window && this.window.setIgnoreMouseEvents(true, { forward: true });
     });
 
     this.window.webContents.on("did-finish-load", () => {
       this.ready = true;
       if (NotificationContainer.CUSTOM_STYLES) {
-        this.window.webContents.send(
-          "custom-styles",
-          NotificationContainer.CUSTOM_STYLES
-        );
+        this.window &&
+          this.window.webContents.send(
+            "custom-styles",
+            NotificationContainer.CUSTOM_STYLES
+          );
       }
       this.notifications.forEach(this.displayNotification);
+    });
+
+    this.window.on("closed", () => {
+      this.window = null;
     });
   }
 
@@ -137,7 +147,11 @@ class NotificationContainer {
    * @memberof NotificationContainer
    */
   private displayNotification = (notification: Notification) => {
-    this.window.webContents.send("notification-add", notification.getSource());
+    this.window &&
+      this.window.webContents.send(
+        "notification-add",
+        notification.getSource()
+      );
     notification.emit("display");
     if (notification.options.timeout) {
       setTimeout(() => {
@@ -155,7 +169,8 @@ class NotificationContainer {
    */
   public removeNotification(notification: Notification) {
     this.notifications.splice(this.notifications.indexOf(notification), 1);
-    this.window.webContents.send("notification-remove", notification.id);
+    this.window &&
+      this.window.webContents.send("notification-remove", notification.id);
     notification.emit("close");
   }
 
@@ -165,7 +180,7 @@ class NotificationContainer {
    * @memberof NotificationContainer
    */
   public dispose() {
-    this.window.close();
+    this.window && this.window.close();
   }
 }
 
