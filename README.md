@@ -18,7 +18,7 @@ Please note that you need to use this inside an existing Electron application af
   setContainerWidth(350);
 
   // OPTIONAL: Set custom styles.
-  setGlobalStyles(`
+  setGlobalStyles(css`
     * {
       font-family: Helvetica;
     }
@@ -38,7 +38,7 @@ Please note that you need to use this inside an existing Electron application af
   const myTitleVar = 'Notification title';
   const myBodyVar = 'Notification body';
   const notification = createNotification({
-    content: `
+    content: html`
       <div class="notification">
         <h1>${myTitleVar}</h1>
         <p>${myBodyVar}</p>
