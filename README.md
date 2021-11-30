@@ -229,4 +229,8 @@ Example animated notification content:
 ### Result
 ![alt text](https://i.imgur.com/h7gJlfJ.gif "Notification result")
  
+ ## To-do
+ * [ ] [Security] Use preload instead of allowing Node access and disabling context isolation in renderer.
+ * [ ] [Enhancement] Allow the container to be placed in different parts of the screen (currently only bottom-right).
+ * [ ] [Enhancement] Make `setGlobalStyles` replace styles instead of appending them.
 
