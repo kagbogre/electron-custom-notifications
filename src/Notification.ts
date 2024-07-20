@@ -1,7 +1,7 @@
 import NotificationManager from "./NotificationManager";
 import INotificationOptions from "./INotificationOptions";
+import crypto from "crypto"
 
-import { uuid } from "uuidv4";
 
 import { EventEmitter } from "events";
 
@@ -37,8 +37,14 @@ class Notification extends EventEmitter {
    */
   constructor(options: INotificationOptions) {
     super();
-    this.id = uuid();
+    this.id = crypto.randomUUID();
     this.options = options;
+    if (!options.showDelete) {
+      this.options.showDelete = false;
+    }
+    if (!options.showDelete) {
+      this.options.showProgressbar = false;
+    }
   }
   /**
    * Asks the NotificationManager to remove this notification.
@@ -54,7 +60,7 @@ class Notification extends EventEmitter {
    * @returns
    * @memberof Notification
    */
-  public getSource(): string {
+  public getSource(): Object {
     if (!this.options.content) return '';
     const firstClosingTagIndex = this.options.content?.indexOf('>');
     const idAttribute = ` data-notification-id="${this.id}"`;
@@ -63,7 +69,7 @@ class Notification extends EventEmitter {
       idAttribute,
       this.options.content.slice(firstClosingTagIndex)
     ];
-    return output.join('');
+    return { ...this.options, content: output.join('') };
   }
 }
 

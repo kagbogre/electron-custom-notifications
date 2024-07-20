@@ -80,11 +80,12 @@ class NotificationContainer {
       nodeIntegration: true,
       contextIsolation: false,
     }; // Since we're not displaying untrusted content 
-       // (all links are opened in a real browser window), we can enable this.
+    // (all links are opened in a real browser window), we can enable this.
 
     this.window = new BrowserWindow(options);
     this.window.setVisibleOnAllWorkspaces(true);
     this.window.loadURL(path.join("file://", __dirname, "/container.html"));
+    //this.window.loadFile("./container.html");
     this.window.setIgnoreMouseEvents(true, { forward: true });
     this.window.showInactive();
     // this.window.webContents.openDevTools({ mode: 'detach' });
@@ -98,6 +99,30 @@ class NotificationContainer {
         notification.emit("click");
       }
     });
+
+    ipcMain.on("delete-clicked", (e: any, id: string) => {
+      const notification = this.notifications.find(
+        notification => notification.id == id
+      );
+
+      if (notification) {
+        notification.emit("deleted");
+        setTimeout(() => {
+          this.removeNotification(notification)
+        }, 500);
+      }
+    });
+
+    ipcMain.on("notification-closed", (e: any, id: string) => {
+      const notification = this.notifications.find(
+        notification => notification.id == id
+      );
+
+      if (notification) {
+        this.removeNotification(notification)
+      }
+    });
+
 
     ipcMain.on("make-clickable", (e: any) => {
       this.window && this.window.setIgnoreMouseEvents(false);
@@ -171,6 +196,7 @@ class NotificationContainer {
     this.notifications.splice(this.notifications.indexOf(notification), 1);
     this.window &&
       this.window.webContents.send("notification-remove", notification.id);
+    this.window?.close();
     notification.emit("close");
   }
 

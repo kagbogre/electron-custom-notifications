@@ -7,4 +7,8 @@
 export default interface INotificationOptions {
   content?: string;
   timeout?: number;
+  showDelete?: boolean;
+  delteIcon?: string;
+  showClose?: boolean;
+  showProgressbar?: boolean;
 }

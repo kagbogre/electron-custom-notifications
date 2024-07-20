@@ -14,12 +14,23 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var NotificationManager_1 = __importDefault(require("./NotificationManager"));
-var uuidv4_1 = require("uuidv4");
+var crypto_1 = __importDefault(require("crypto"));
 var events_1 = require("events");
 /**
  * Represents a Notification.
@@ -38,8 +49,14 @@ var Notification = /** @class */ (function (_super) {
      */
     function Notification(options) {
         var _this = _super.call(this) || this;
-        _this.id = (0, uuidv4_1.uuid)();
+        _this.id = crypto_1.default.randomUUID();
         _this.options = options;
+        if (!options.showDelete) {
+            _this.options.showDelete = false;
+        }
+        if (!options.showDelete) {
+            _this.options.showProgressbar = false;
+        }
         return _this;
     }
     /**
@@ -67,7 +84,7 @@ var Notification = /** @class */ (function (_super) {
             idAttribute,
             this.options.content.slice(firstClosingTagIndex)
         ];
-        return output.join('');
+        return __assign(__assign({}, this.options), { content: output.join('') });
     };
     return Notification;
 }(events_1.EventEmitter));

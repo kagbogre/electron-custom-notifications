@@ -95,6 +95,7 @@ var NotificationContainer = /** @class */ (function () {
         this.window = new electron_1.BrowserWindow(options);
         this.window.setVisibleOnAllWorkspaces(true);
         this.window.loadURL(path.join("file://", __dirname, "/container.html"));
+        //this.window.loadFile("./container.html");
         this.window.setIgnoreMouseEvents(true, { forward: true });
         this.window.showInactive();
         // this.window.webContents.openDevTools({ mode: 'detach' });
@@ -102,6 +103,21 @@ var NotificationContainer = /** @class */ (function () {
             var notification = _this.notifications.find(function (notification) { return notification.id == id; });
             if (notification) {
                 notification.emit("click");
+            }
+        });
+        electron_1.ipcMain.on("delete-clicked", function (e, id) {
+            var notification = _this.notifications.find(function (notification) { return notification.id == id; });
+            if (notification) {
+                notification.emit("deleted");
+                setTimeout(function () {
+                    _this.removeNotification(notification);
+                }, 500);
+            }
+        });
+        electron_1.ipcMain.on("notification-closed", function (e, id) {
+            var notification = _this.notifications.find(function (notification) { return notification.id == id; });
+            if (notification) {
+                _this.removeNotification(notification);
             }
         });
         electron_1.ipcMain.on("make-clickable", function (e) {
@@ -143,9 +159,11 @@ var NotificationContainer = /** @class */ (function () {
      * @memberof NotificationContainer
      */
     NotificationContainer.prototype.removeNotification = function (notification) {
+        var _a;
         this.notifications.splice(this.notifications.indexOf(notification), 1);
         this.window &&
             this.window.webContents.send("notification-remove", notification.id);
+        (_a = this.window) === null || _a === void 0 ? void 0 : _a.close();
         notification.emit("close");
     };
     /**

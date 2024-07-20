@@ -42,7 +42,7 @@ declare class Notification extends EventEmitter {
      * @returns
      * @memberof Notification
      */
-    getSource(): string;
+    getSource(): Object;
 }
 export default Notification;
 //# sourceMappingURL=Notification.d.ts.map
