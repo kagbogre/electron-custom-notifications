@@ -1,7 +1,7 @@
 import NotificationManager from "./NotificationManager";
 import INotificationOptions from "./INotificationOptions";
 
-import { v4 as uuidv4 } from "uuid";
+import { uuid } from "uuidv4";
 
 import { EventEmitter } from "events";
 
@@ -37,7 +37,7 @@ class Notification extends EventEmitter {
    */
   constructor(options: INotificationOptions) {
     super();
-    this.id = uuidv4();
+    this.id = uuid();
     this.options = options;
   }
   /**

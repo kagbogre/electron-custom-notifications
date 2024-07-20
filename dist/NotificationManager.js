@@ -3,8 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const NotificationContainer_1 = __importDefault(require("./NotificationContainer"));
-const Notification_1 = __importDefault(require("./Notification"));
+var NotificationContainer_1 = __importDefault(require("./NotificationContainer"));
+var Notification_1 = __importDefault(require("./Notification"));
 /**
  * Handles the creation of NotificationContainer and
  * Notifications that get pushed into them.
@@ -13,16 +13,9 @@ const Notification_1 = __importDefault(require("./Notification"));
  *
  * @class NotificationManager
  */
-class NotificationManager {
-    /**
-     * The active NotificationContainer.
-     *
-     * @private
-     * @static
-     * @type {NotificationContainer}
-     * @memberof NotificationManager
-     */
-    static container;
+var NotificationManager = /** @class */ (function () {
+    function NotificationManager() {
+    }
     /**
      * Prepares a NotificationContainer.
      *
@@ -30,12 +23,12 @@ class NotificationManager {
      * @static
      * @memberof NotificationManager
      */
-    static getContainer() {
+    NotificationManager.getContainer = function () {
         if (!NotificationManager.container) {
             NotificationManager.container = new NotificationContainer_1.default();
         }
         return NotificationManager.container;
-    }
+    };
     /**
      * Destroys a notification (and container if there are none left).
      *
@@ -43,7 +36,7 @@ class NotificationManager {
      * @param {Notification} notification
      * @memberof NotificationManager
      */
-    static destroyNotification(notification) {
+    NotificationManager.destroyNotification = function (notification) {
         if (NotificationManager.container) {
             NotificationManager.container.removeNotification(notification);
             // Once we have no notifications left, destroy the container.
@@ -52,7 +45,7 @@ class NotificationManager {
                 NotificationManager.container = null;
             }
         }
-    }
+    };
     /**
      * Creates a new Notification and pushes it to the
      * NotificationContainer.
@@ -61,12 +54,13 @@ class NotificationManager {
      * @param {INotificationOptions} options
      * @memberof NotificationManager
      */
-    static createNotification(options) {
-        const container = NotificationManager.getContainer();
-        const notification = new Notification_1.default(options);
+    NotificationManager.createNotification = function (options) {
+        var container = NotificationManager.getContainer();
+        var notification = new Notification_1.default(options);
         container.addNotification(notification);
         return notification;
-    }
-}
+    };
+    return NotificationManager;
+}());
 exports.default = NotificationManager;
 //# sourceMappingURL=NotificationManager.js.map
