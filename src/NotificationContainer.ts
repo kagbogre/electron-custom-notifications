@@ -107,9 +107,7 @@ class NotificationContainer {
 
       if (notification) {
         notification.emit("deleted");
-        setTimeout(() => {
-          this.removeNotification(notification)
-        }, 500);
+
       }
     });
 
