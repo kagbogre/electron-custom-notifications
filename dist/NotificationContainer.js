@@ -109,9 +109,6 @@ var NotificationContainer = /** @class */ (function () {
             var notification = _this.notifications.find(function (notification) { return notification.id == id; });
             if (notification) {
                 notification.emit("deleted");
-                setTimeout(function () {
-                    _this.removeNotification(notification);
-                }, 500);
             }
         });
         electron_1.ipcMain.on("notification-closed", function (e, id) {
