@@ -23,57 +23,63 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var electron_1 = require("electron");
-var path = __importStar(require("path"));
+const electron_1 = require("electron");
+const path = __importStar(require("path"));
 /**
  * Container where Notifications are pushed into.
  *
  * @class NotificationContainer
  */
-var NotificationContainer = /** @class */ (function () {
+class NotificationContainer {
+    /**
+     * The container's width.
+     * @default 300
+     *
+     * @static
+     * @memberof NotificationContainer
+     */
+    static CONTAINER_WIDTH = 300;
+    /**
+     * Custom CSS styles to add to the container HTML.
+     *
+     * @static
+     * @type {string}
+     * @memberof NotificationContainer
+     */
+    static CUSTOM_STYLES;
+    /**
+     * Determines if the container window has been loaded.
+     *
+     * @type {boolean}
+     * @memberof NotificationContainer
+     */
+    ready = false;
+    /**
+     * Collection of Notifications that are currently inside
+     * the container.
+     *
+     * @private
+     * @type {Notification[]}
+     * @memberof NotificationContainer
+     */
+    notifications = [];
+    /**
+     * The Electron BrowserWindow for this container.
+     *
+     * @private
+     * @type {BrowserWindow}
+     * @memberof NotificationContainer
+     */
+    window;
     /**
      * Creates an instance of NotificationContainer.
      * @memberof NotificationContainer
      */
-    function NotificationContainer() {
-        var _this = this;
-        /**
-         * Determines if the container window has been loaded.
-         *
-         * @type {boolean}
-         * @memberof NotificationContainer
-         */
-        this.ready = false;
-        /**
-         * Collection of Notifications that are currently inside
-         * the container.
-         *
-         * @private
-         * @type {Notification[]}
-         * @memberof NotificationContainer
-         */
-        this.notifications = [];
-        /**
-         * Displays the notification visually.
-         *
-         * @private
-         * @param {Notification} notification
-         * @memberof NotificationContainer
-         */
-        this.displayNotification = function (notification) {
-            _this.window &&
-                _this.window.webContents.send("notification-add", notification.getSource());
-            notification.emit("display");
-            if (notification.options.timeout) {
-                setTimeout(function () {
-                    notification.close();
-                }, notification.options.timeout);
-            }
-        };
-        var options = {};
-        var display = require("electron").screen.getPrimaryDisplay();
-        var displayWidth = display.workArea.x + display.workAreaSize.width;
-        var displayHeight = display.workArea.y + display.workAreaSize.height;
+    constructor() {
+        let options = {};
+        const display = require("electron").screen.getPrimaryDisplay();
+        const displayWidth = display.workArea.x + display.workAreaSize.width;
+        const displayHeight = display.workArea.y + display.workAreaSize.height;
         options.height = displayHeight;
         options.width = NotificationContainer.CONTAINER_WIDTH;
         options.alwaysOnTop = true;
@@ -98,28 +104,28 @@ var NotificationContainer = /** @class */ (function () {
         this.window.setIgnoreMouseEvents(true, { forward: true });
         this.window.showInactive();
         // this.window.webContents.openDevTools({ mode: 'detach' });
-        electron_1.ipcMain.on("notification-clicked", function (e, id) {
-            var notification = _this.notifications.find(function (notification) { return notification.id == id; });
+        electron_1.ipcMain.on("notification-clicked", (e, id) => {
+            const notification = this.notifications.find(notification => notification.id == id);
             if (notification) {
                 notification.emit("click");
             }
         });
-        electron_1.ipcMain.on("make-clickable", function (e) {
-            _this.window && _this.window.setIgnoreMouseEvents(false);
+        electron_1.ipcMain.on("make-clickable", (e) => {
+            this.window && this.window.setIgnoreMouseEvents(false);
         });
-        electron_1.ipcMain.on("make-unclickable", function (e) {
-            _this.window && _this.window.setIgnoreMouseEvents(true, { forward: true });
+        electron_1.ipcMain.on("make-unclickable", (e) => {
+            this.window && this.window.setIgnoreMouseEvents(true, { forward: true });
         });
-        this.window.webContents.on("did-finish-load", function () {
-            _this.ready = true;
+        this.window.webContents.on("did-finish-load", () => {
+            this.ready = true;
             if (NotificationContainer.CUSTOM_STYLES) {
-                _this.window &&
-                    _this.window.webContents.send("custom-styles", NotificationContainer.CUSTOM_STYLES);
+                this.window &&
+                    this.window.webContents.send("custom-styles", NotificationContainer.CUSTOM_STYLES);
             }
-            _this.notifications.forEach(_this.displayNotification);
+            this.notifications.forEach(this.displayNotification);
         });
-        this.window.on("closed", function () {
-            _this.window = null;
+        this.window.on("closed", () => {
+            this.window = null;
         });
     }
     /**
@@ -129,11 +135,28 @@ var NotificationContainer = /** @class */ (function () {
      * @param {Notification} notification
      * @memberof NotificationContainer
      */
-    NotificationContainer.prototype.addNotification = function (notification) {
+    addNotification(notification) {
         if (this.ready) {
             this.displayNotification(notification);
         }
         this.notifications.push(notification);
+    }
+    /**
+     * Displays the notification visually.
+     *
+     * @private
+     * @param {Notification} notification
+     * @memberof NotificationContainer
+     */
+    displayNotification = (notification) => {
+        this.window &&
+            this.window.webContents.send("notification-add", notification.getSource());
+        notification.emit("display");
+        if (notification.options.timeout) {
+            setTimeout(() => {
+                notification.close();
+            }, notification.options.timeout);
+        }
     };
     /**
      * Removes a notification logically (notifications[]) and
@@ -142,29 +165,20 @@ var NotificationContainer = /** @class */ (function () {
      * @param {Notification} notification
      * @memberof NotificationContainer
      */
-    NotificationContainer.prototype.removeNotification = function (notification) {
+    removeNotification(notification) {
         this.notifications.splice(this.notifications.indexOf(notification), 1);
         this.window &&
             this.window.webContents.send("notification-remove", notification.id);
         notification.emit("close");
-    };
+    }
     /**
      * Destroys the container.
      *
      * @memberof NotificationContainer
      */
-    NotificationContainer.prototype.dispose = function () {
+    dispose() {
         this.window && this.window.close();
-    };
-    /**
-     * The container's width.
-     * @default 300
-     *
-     * @static
-     * @memberof NotificationContainer
-     */
-    NotificationContainer.CONTAINER_WIDTH = 300;
-    return NotificationContainer;
-}());
+    }
+}
 exports.default = NotificationContainer;
 //# sourceMappingURL=NotificationContainer.js.map

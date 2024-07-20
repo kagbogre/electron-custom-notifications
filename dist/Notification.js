@@ -1,26 +1,11 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var NotificationManager_1 = __importDefault(require("./NotificationManager"));
-var uuid_1 = require("uuid");
-var events_1 = require("events");
+const NotificationManager_1 = __importDefault(require("./NotificationManager"));
+const uuid_1 = require("uuid");
+const events_1 = require("events");
 /**
  * Represents a Notification.
  * Emits two events:
@@ -29,47 +14,58 @@ var events_1 = require("events");
  *
  * @class Notification
  */
-var Notification = /** @class */ (function (_super) {
-    __extends(Notification, _super);
+class Notification extends events_1.EventEmitter {
+    /**
+     * The notification´s unique ID.
+     *
+     * @type {string}
+     * @memberof Notification
+     */
+    id;
+    /**
+     * Supplied notification options.
+     *
+     * @private
+     * @type {INotificationOptions}
+     * @memberof Notification
+     */
+    options;
     /**
      * Creates an instance of Notification.
      * @param {INotificationOptions} options
      * @memberof Notification
      */
-    function Notification(options) {
-        var _this = _super.call(this) || this;
-        _this.id = (0, uuid_1.v4)();
-        _this.options = options;
-        return _this;
+    constructor(options) {
+        super();
+        this.id = (0, uuid_1.v4)();
+        this.options = options;
     }
     /**
      * Asks the NotificationManager to remove this notification.
      *
      * @memberof Notification
      */
-    Notification.prototype.close = function () {
+    close() {
         NotificationManager_1.default.destroyNotification(this);
-    };
+    }
     /**
      * Returns the processed template source.
      *
      * @returns
      * @memberof Notification
      */
-    Notification.prototype.getSource = function () {
-        var _a;
+    getSource() {
         if (!this.options.content)
             return '';
-        var firstClosingTagIndex = (_a = this.options.content) === null || _a === void 0 ? void 0 : _a.indexOf('>');
-        var idAttribute = " data-notification-id=\"".concat(this.id, "\"");
-        var output = [
+        const firstClosingTagIndex = this.options.content?.indexOf('>');
+        const idAttribute = ` data-notification-id="${this.id}"`;
+        const output = [
             this.options.content.slice(0, firstClosingTagIndex),
             idAttribute,
             this.options.content.slice(firstClosingTagIndex)
         ];
         return output.join('');
-    };
-    return Notification;
-}(events_1.EventEmitter));
+    }
+}
 exports.default = Notification;
 //# sourceMappingURL=Notification.js.map

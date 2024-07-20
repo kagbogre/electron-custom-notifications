@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createNotification = createNotification;
 exports.setContainerWidth = setContainerWidth;
 exports.setGlobalStyles = setGlobalStyles;
-var NotificationManager_1 = __importDefault(require("./NotificationManager"));
-var NotificationContainer_1 = __importDefault(require("./NotificationContainer"));
+const NotificationManager_1 = __importDefault(require("./NotificationManager"));
+const NotificationContainer_1 = __importDefault(require("./NotificationContainer"));
 /**
  * Spawns a new notification.
  * Warning: You MUST use this library from another
