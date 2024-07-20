@@ -1,6 +1,6 @@
 {
   "name": "electron-custom-notifications",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Cross-platform notifications using Electron's BrowserWindow",
   "main": "dist/index.js",
   "scripts": {
@@ -10,12 +10,12 @@
   "author": "Kedi Agbogre",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^10.11.7",
-    "@types/uuid": "^3.4.4",
-    "electron": "^3.0.3",
-    "typescript": "^3.1.2"
+    "@types/node": "^20.14.11",
+    "@types/uuid": "^10.0.0",
+    "electron": "^31.2.1",
+    "typescript": "^5.5.3"
   },
   "dependencies": {
-    "uuid": "^3.3.2"
+    "uuid": "^10.0.0"
   }
 }

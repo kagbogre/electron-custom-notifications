@@ -1,7 +1,7 @@
 import NotificationManager from "./NotificationManager";
 import INotificationOptions from "./INotificationOptions";
 
-import uuid from "uuid/v4";
+import { v4 as uuidv4 } from "uuid";
 
 import { EventEmitter } from "events";
 
@@ -37,7 +37,7 @@ class Notification extends EventEmitter {
    */
   constructor(options: INotificationOptions) {
     super();
-    this.id = uuid();
+    this.id = uuidv4();
     this.options = options;
   }
   /**
@@ -55,12 +55,12 @@ class Notification extends EventEmitter {
    * @memberof Notification
    */
   public getSource(): string {
-    if(!this.options.content) return '';
+    if (!this.options.content) return '';
     const firstClosingTagIndex = this.options.content?.indexOf('>');
     const idAttribute = ` data-notification-id="${this.id}"`;
     const output = [
-      this.options.content.slice(0, firstClosingTagIndex), 
-      idAttribute, 
+      this.options.content.slice(0, firstClosingTagIndex),
+      idAttribute,
       this.options.content.slice(firstClosingTagIndex)
     ];
     return output.join('');
